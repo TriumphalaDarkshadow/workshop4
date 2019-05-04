@@ -1,21 +1,42 @@
 from openpyxl import Workbook
+from openpyxl import load_workbook
+import os
 
-''' Vorlage für die Loesung der 3ten Workshop Aufgabe im SS2019
-    Schreibwarenladen mit Ausgabe eines Excel- Files
- 
- 
  ##Input soll als Name des Excel-File gespeichert werden
  ##falls Datei existiert (-> pruefen, ob existiert), soll ein weiteres worksheet erstellt werden
 
-    author = 
-    erstellt am  = 06. April 2019
-    
-'''
-wb = Workbook()
+if not os.path.exists("Rechnung"):
+  os.mkdir("Rechnung")
 
-ws = wb.active
 
-ws.title ="Rechnung"
+vorname = input("Geben Sie Ihren Vornamen ein: ")
+nachname = input("Geben Sie Ihren Nachnamen ein: ")
+
+
+sheet_count=1
+#lade vorhandenes workbook falls es exestiert
+if os.path.exists("Rechnung/"+vorname+nachname+".xlsx"):
+  print "workbook exestiert bereits"
+  wb=load_workbook("Rechnung/"+vorname+nachname+".xlsx")
+
+   #zähle anzahal der worksheets...gitb warscheinlich auch eine funktion die das macht
+  for sheet in wb:
+      sheet_count +=1
+
+  print "erstelle worksheet mit nummer" + str(sheet_count)
+  
+  # erstelle neues worksheet
+  ws = wb.create_sheet(str(sheet_count))
+  #setze erstelltes worksheet auf als das active
+  wb.active = ws
+else:
+  print "erstelle neues workbook"
+  wb = Workbook()  
+  ws = wb.active
+  
+
+
+ws.title =str(sheet_count)
 
 
 
@@ -25,8 +46,7 @@ stueckpreis_lineal = 199
 stueckpreis_marker = 255
 
 #Kunden Namen einlesen
-vorname = input("Geben Sie Ihren Vornamen ein: ")
-nachname = input("Geben Sie Ihren Nachnamen ein: ")
+
 
 
 
@@ -51,7 +71,7 @@ ws['C8'] = zahl_stift
 ws['C9'] = zahl_lineal
 ws['C10'] = zahl_marker
 
-#einkauf = eine Liste von Tupel die die Werte der auszugebenden Tabelle enthält
+#einkauf = eine Liste von Tupel die die Werte der auszugebenden Tabelle enthlt
 einkauf = []
 einkauf.append(('Briefumschlag',stueckpreis_umschlag/100, zahl_umschlag,(stueckpreis_umschlag * zahl_umschlag)/100))
 einkauf.append(('Bleistift',stueckpreis_stift/100,zahl_stift,(stueckpreis_stift * zahl_stift)/100))
@@ -118,4 +138,5 @@ ws['B10'] = 2.55
 
 
 ## < Arbeitsordner>\Rechnung\Rechnung_<Vorname><Nachname>.xlsx
-wb.save(filename = 'vornamenachname.xlsx')
+wb.save('Rechnung/'+vorname+nachname+'.xlsx')
+
